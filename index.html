@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login & Time App</title>
+    <style>
+      :root {
+        --color-white: rgba(255, 255, 255, 1);
+        --color-cream-50: rgba(252, 252, 249, 1);
+        --color-charcoal-700: rgba(31, 33, 33, 1);
+        --color-charcoal-800: rgba(38, 40, 40, 1);
+        --color-slate-900: rgba(19, 52, 59, 1);
+        --color-slate-500: rgba(98, 108, 113, 1);
+        --color-teal-500: rgba(33, 128, 141, 1);
+        --color-teal-600: rgba(29, 116, 128, 1);
+        --color-gray-200: rgba(245, 245, 245, 1);
+        --color-border: rgba(94, 82, 64, 0.2);
+        --color-text: var(--color-slate-900);
+        --color-bg: var(--color-cream-50);
+        --color-primary: var(--color-teal-500);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --color-charcoal-700: rgba(31, 33, 33, 1);
+          --color-charcoal-800: rgba(38, 40, 40, 1);
+          --color-slate-900: rgba(19, 52, 59, 1);
+          --color-text: rgba(245, 245, 245, 1);
+          --color-bg: var(--color-charcoal-700);
+          --color-primary: rgba(50, 184, 198, 1);
+          --color-border: rgba(119, 124, 124, 0.3);
+        }
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: var(--color-bg);
+        color: var(--color-text);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        transition: background-color 0.3s ease;
+      }
+
+      .container {
+        max-width: 600px;
+        width: 100%;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      .header h1 {
+        font-size: 32px;
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+
+      .nav {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+      }
+
+      .nav-link {
+        padding: 10px 20px;
+        background-color: transparent;
+        border: 2px solid var(--color-primary);
+        color: var(--color-primary);
+        text-decoration: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .nav-link:hover {
+        background-color: var(--color-primary);
+        color: var(--color-white);
+      }
+
+      .nav-link.active {
+        background-color: var(--color-primary);
+        color: var(--color-white);
+      }
+
+      .card {
+        background-color: var(--color-white);
+        border-radius: 12px;
+        border: 1px solid var(--color-border);
+        padding: 40px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+        min-height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .card {
+          background-color: var(--color-charcoal-800);
+        }
+      }
+
+      .content {
+        text-align: center;
+        width: 100%;
+      }
+
+      .content-label {
+        font-size: 14px;
+        color: var(--color-slate-500);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 20px;
+        font-weight: 500;
+      }
+
+      .content-value {
+        font-size: 48px;
+        font-weight: 600;
+        color: var(--color-primary);
+        word-break: break-all;
+        font-family: "Courier New", monospace;
+      }
+
+      .info-text {
+        font-size: 14px;
+        color: var(--color-slate-500);
+        margin-top: 20px;
+        line-height: 1.6;
+      }
+
+      .home-content {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .home-card {
+        text-align: left;
+        padding: 20px;
+        background-color: rgba(33, 128, 141, 0.05);
+        border-radius: 8px;
+        border-left: 4px solid var(--color-primary);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .home-card {
+          background-color: rgba(50, 184, 198, 0.08);
+        }
+      }
+
+      .home-card h3 {
+        font-size: 16px;
+        margin-bottom: 8px;
+        color: var(--color-primary);
+      }
+
+      .home-card p {
+        font-size: 14px;
+        color: var(--color-slate-500);
+        margin: 0;
+      }
+
+      .url-display {
+        background-color: rgba(0, 0, 0, 0.05);
+        padding: 12px 16px;
+        border-radius: 6px;
+        font-family: "Courier New", monospace;
+        font-size: 12px;
+        word-break: break-all;
+        margin-top: 10px;
+        border: 1px solid var(--color-border);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .url-display {
+          background-color: rgba(255, 255, 255, 0.05);
+        }
+      }
+
+      .copy-btn {
+        padding: 8px 16px;
+        background-color: var(--color-primary);
+        color: var(--color-white);
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 500;
+        margin-top: 12px;
+        transition: all 0.3s ease;
+      }
+
+      .copy-btn:hover {
+        opacity: 0.9;
+      }
+
+      .copy-btn:active {
+        transform: scale(0.98);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🔐 App</h1>
+      </div>
+
+      <div class="nav">
+        <button class="nav-link active" onclick="navigateTo('home')">
+          Home
+        </button>
+        <button class="nav-link" onclick="navigateTo('login')">Login</button>
+        <button class="nav-link" onclick="navigateTo('hour')">Hour</button>
+      </div>
+
+      <div class="card">
+        <div class="content" id="content">
+          <div class="home-content">
+            <div class="home-card">
+              <h3>📍 /login</h3>
+              <p>Выдаёт ваш логин в системе</p>
+              <div class="url-display" id="login-url"></div>
+              <button class="copy-btn" onclick="copyToClipboard('login-url')">
+                Скопировать
+              </button>
+            </div>
+            <div class="home-card">
+              <h3>⏰ /hour</h3>
+              <p>Выдаёт текущий час по Московскому времени в формате HH</p>
+              <div class="url-display" id="hour-url"></div>
+              <button class="copy-btn" onclick="copyToClipboard('hour-url')">
+                Скопировать
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const LOGIN = "viktorkk1";
+      const MOSCOW_TZ_OFFSET = 3; 
+
+      function getMoscowHour() {
+        const now = new Date();
+        const utcHours = now.getUTCHours();
+        const moscowHours = (utcHours + MOSCOW_TZ_OFFSET) % 24;
+        return String(moscowHours).padStart(2, "0");
+      }
+
+      function navigateTo(route) {
+        updateActiveNav(route);
+        const contentDiv = document.getElementById("content");
+
+        if (route === "home") {
+          contentDiv.innerHTML = `
+                    <div class="home-content">
+                        <div class="home-card">
+                            <h3>📍 /login</h3>
+                            <p>Выдаёт ваш логин в системе</p>
+                            <div class="url-display" id="login-url"></div>
+                            <button class="copy-btn" onclick="copyToClipboard('login-url')">Скопировать</button>
+                        </div>
+                        <div class="home-card">
+                            <h3>⏰ /hour</h3>
+                            <p>Выдаёт текущий час по Московскому времени в формате HH</p>
+                            <div class="url-display" id="hour-url"></div>
+                            <button class="copy-btn" onclick="copyToClipboard('hour-url')">Скопировать</button>
+                        </div>
+                    </div>
+                `;
+          updateUrlDisplays();
+        } else if (route === "login") {
+          contentDiv.innerHTML = `
+                    <div class="content">
+                        <div class="content-label">Ваш логин</div>
+                        <div class="content-value">${LOGIN}</div>
+                        <div class="info-text">Маршрут: /login</div>
+                    </div>
+                `;
+        } else if (route === "hour") {
+          const hour = getMoscowHour();
+          contentDiv.innerHTML = `
+                    <div class="content">
+                        <div class="content-label">Московское время (часы)</div>
+                        <div class="content-value">${hour}</div>
+                        <div class="info-text">
+                            <div>Маршрут: /hour</div>
+                            <div style="margin-top: 10px; font-size: 12px;">
+                                Текущее московское время (UTC+3):<br>
+                                ${new Date(
+                                  new Date().getTime() +
+                                    MOSCOW_TZ_OFFSET * 3600000
+                                ).toLocaleString("ru-RU")}
+                            </div>
+                        </div>
+                    </div>
+                `;
+        }
+      }
+
+      function updateActiveNav(route) {
+        const navLinks = document.querySelectorAll(".nav-link");
+        navLinks.forEach((link) => link.classList.remove("active"));
+
+        const routeMap = { home: 0, login: 1, hour: 2 };
+        if (routeMap[route] !== undefined) {
+          navLinks[routeMap[route]].classList.add("active");
+        }
+      }
+
+      function updateUrlDisplays() {
+        const baseUrl = window.location.origin + window.location.pathname;
+        const loginUrl = document.getElementById("login-url");
+        const hourUrl = document.getElementById("hour-url");
+
+        if (loginUrl) {
+          loginUrl.textContent = baseUrl + "?route=login";
+        }
+        if (hourUrl) {
+          hourUrl.textContent = baseUrl + "?route=hour";
+        }
+      }
+
+      function copyToClipboard(elementId) {
+        const element = document.getElementById(elementId);
+        const text = element.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          const btn = event.target;
+          const originalText = btn.textContent;
+          btn.textContent = "✓ Скопировано!";
+          setTimeout(() => {
+            btn.textContent = originalText;
+          }, 2000);
+        });
+      }
+
+      window.addEventListener("load", () => {
+        const params = new URLSearchParams(window.location.search);
+        const route = params.get("route") || "home";
+        navigateTo(route);
+      });
+
+      window.addEventListener("popstate", () => {
+        const params = new URLSearchParams(window.location.search);
+        const route = params.get("route") || "home";
+        navigateTo(route);
+      });
+    </script>
+  </body>
+</html>
