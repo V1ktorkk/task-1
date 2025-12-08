@@ -224,11 +224,9 @@
       </div>
 
       <div class="nav">
-        <button class="nav-link active" onclick="navigateTo('home')">
-          Home
-        </button>
-        <button class="nav-link" onclick="navigateTo('login')">Login</button>
-        <button class="nav-link" onclick="navigateTo('hour')">Hour</button>
+        <a href="/task-1/" class="nav-link active" id="home-btn">Home</a>
+        <a href="/task-1/login" class="nav-link" id="login-btn">Login</a>
+        <a href="/task-1/hour" class="nav-link" id="hour-btn">Hour</a>
       </div>
 
       <div class="card">
@@ -237,7 +235,9 @@
             <div class="home-card">
               <h3>📍 /login</h3>
               <p>Выдаёт ваш логин в системе</p>
-              <div class="url-display" id="login-url"></div>
+              <div class="url-display" id="login-url">
+                https://v1ktorkk.github.io/task-1/login
+              </div>
               <button class="copy-btn" onclick="copyToClipboard('login-url')">
                 Скопировать
               </button>
@@ -245,7 +245,9 @@
             <div class="home-card">
               <h3>⏰ /hour</h3>
               <p>Выдаёт текущий час по Московскому времени в формате HH</p>
-              <div class="url-display" id="hour-url"></div>
+              <div class="url-display" id="hour-url">
+                https://v1ktorkk.github.io/task-1/hour
+              </div>
               <button class="copy-btn" onclick="copyToClipboard('hour-url')">
                 Скопировать
               </button>
@@ -257,7 +259,8 @@
 
     <script>
       const LOGIN = "viktorkk1";
-      const MOSCOW_TZ_OFFSET = 3; 
+      const MOSCOW_TZ_OFFSET = 3;
+      const BASE_PATH = "/task-1";
 
       function getMoscowHour() {
         const now = new Date();
@@ -266,7 +269,25 @@
         return String(moscowHours).padStart(2, "0");
       }
 
+      function getCurrentRoute() {
+        const pathname = window.location.pathname;
+        const route = pathname.replace(BASE_PATH, "").replace(/\/$/, "");
+
+        if (route === "/login") return "login";
+        if (route === "/hour") return "hour";
+        return "home";
+      }
+
       function navigateTo(route) {
+        if (route === "home") {
+          window.history.pushState(null, "", BASE_PATH + "/");
+        } else {
+          window.history.pushState(null, "", BASE_PATH + "/" + route);
+        }
+        updatePage(route);
+      }
+
+      function updatePage(route) {
         updateActiveNav(route);
         const contentDiv = document.getElementById("content");
 
@@ -276,18 +297,17 @@
                         <div class="home-card">
                             <h3>📍 /login</h3>
                             <p>Выдаёт ваш логин в системе</p>
-                            <div class="url-display" id="login-url"></div>
+                            <div class="url-display" id="login-url">https://v1ktorkk.github.io/task-1/login</div>
                             <button class="copy-btn" onclick="copyToClipboard('login-url')">Скопировать</button>
                         </div>
                         <div class="home-card">
                             <h3>⏰ /hour</h3>
                             <p>Выдаёт текущий час по Московскому времени в формате HH</p>
-                            <div class="url-display" id="hour-url"></div>
+                            <div class="url-display" id="hour-url">https://v1ktorkk.github.io/task-1/hour</div>
                             <button class="copy-btn" onclick="copyToClipboard('hour-url')">Скопировать</button>
                         </div>
                     </div>
                 `;
-          updateUrlDisplays();
         } else if (route === "login") {
           contentDiv.innerHTML = `
                     <div class="content">
@@ -318,25 +338,16 @@
       }
 
       function updateActiveNav(route) {
-        const navLinks = document.querySelectorAll(".nav-link");
-        navLinks.forEach((link) => link.classList.remove("active"));
+        document.getElementById("home-btn").classList.remove("active");
+        document.getElementById("login-btn").classList.remove("active");
+        document.getElementById("hour-btn").classList.remove("active");
 
-        const routeMap = { home: 0, login: 1, hour: 2 };
-        if (routeMap[route] !== undefined) {
-          navLinks[routeMap[route]].classList.add("active");
-        }
-      }
-
-      function updateUrlDisplays() {
-        const baseUrl = window.location.origin + window.location.pathname;
-        const loginUrl = document.getElementById("login-url");
-        const hourUrl = document.getElementById("hour-url");
-
-        if (loginUrl) {
-          loginUrl.textContent = baseUrl + "?route=login";
-        }
-        if (hourUrl) {
-          hourUrl.textContent = baseUrl + "?route=hour";
+        if (route === "home") {
+          document.getElementById("home-btn").classList.add("active");
+        } else if (route === "login") {
+          document.getElementById("login-btn").classList.add("active");
+        } else if (route === "hour") {
+          document.getElementById("hour-btn").classList.add("active");
         }
       }
 
@@ -353,16 +364,29 @@
         });
       }
 
-      window.addEventListener("load", () => {
-        const params = new URLSearchParams(window.location.search);
-        const route = params.get("route") || "home";
-        navigateTo(route);
+      document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("home-btn").addEventListener("click", (e) => {
+          e.preventDefault();
+          navigateTo("home");
+        });
+
+        document.getElementById("login-btn").addEventListener("click", (e) => {
+          e.preventDefault();
+          navigateTo("login");
+        });
+
+        document.getElementById("hour-btn").addEventListener("click", (e) => {
+          e.preventDefault();
+          navigateTo("hour");
+        });
+
+        const currentRoute = getCurrentRoute();
+        updatePage(currentRoute);
       });
 
       window.addEventListener("popstate", () => {
-        const params = new URLSearchParams(window.location.search);
-        const route = params.get("route") || "home";
-        navigateTo(route);
+        const currentRoute = getCurrentRoute();
+        updatePage(currentRoute);
       });
     </script>
   </body>
