@@ -1,10 +1,10 @@
 const express = require("express");
 const path = require("path");
+const https = require("https");
 
 const app = express();
 
 const LOGIN = "viktorkk1";
-const MOSCOW_TZ_OFFSET = 3;
 
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -12,12 +12,42 @@ app.get("/login", (req, res) => {
   res.send(LOGIN);
 });
 
-app.get("/hour", (req, res) => {
-  const now = new Date();
-  const utcHours = now.getUTCHours();
-  const moscowHours = (utcHours + MOSCOW_TZ_OFFSET) % 24;
-  const hour = String(moscowHours).padStart(2, "0");
-  res.send(hour);
+app.get("/id/:N", (req, res) => {
+  const userID = req.params.N;
+  const apiUrl = `https://nd.kodaktor.ru/users/${userID}`;
+
+  const options = {
+    method: "GET",
+    headers: {},
+  };
+
+  https
+    .get(apiUrl, options, (apiRes) => {
+      let data = "";
+
+      apiRes.on("data", (chunk) => {
+        data += chunk;
+      });
+
+      apiRes.on("end", () => {
+        try {
+          const jsonData = JSON.parse(data);
+
+          if (jsonData && jsonData.login) {
+            res.send(jsonData.login);
+          } else {
+            res.status(400).send("Поле login не найдено");
+          }
+        } catch (err) {
+          res.status(400).send("Ошибка парсинга JSON: " + err.message);
+        }
+      });
+    })
+    .on("error", (err) => {
+      res
+        .status(500)
+        .send("Ошибка при запросе к nd.kodaktor.ru: " + err.message);
+    });
 });
 
 app.get("/", (req, res) => {
@@ -36,6 +66,5 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Сервер запущен на порту ${PORT}`);
-  console.log(`Маршруты:`);
   console.log(`  http://localhost:${PORT}`);
 });
