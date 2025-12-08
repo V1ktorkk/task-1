@@ -270,6 +270,11 @@
       }
 
       function getCurrentRoute() {
+        const params = new URLSearchParams(window.location.search);
+        const queryRoute = params.get("route");
+        if (queryRoute) {
+          return queryRoute;
+        }
         const pathname = window.location.pathname;
         const route = pathname.replace(BASE_PATH, "").replace(/\/$/, "");
 
