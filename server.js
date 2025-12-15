@@ -1,13 +1,22 @@
 const express = require("express");
 const multer = require("multer");
 const sharp = require("sharp");
-const https = require("https");
-const fs = require("fs");
 
 const app = express();
 const upload = multer();
 
 const LOGIN = "viktorkk1";
+const CUSTOM_ID = "7cd977ad-9064-437b-a4db-b9b8b2b669d0";
+
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("X-Author", CUSTOM_ID);
+  next();
+});
+
+app.get("/", (req, res) => {
+  res.type("text/plain").send(CUSTOM_ID);
+});
 
 app.get("/login", (req, res) => {
   res.type("text/plain").send(LOGIN);
@@ -31,6 +40,7 @@ app.post("/size2json", upload.single("image"), async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
-  console.log(`Сервер запущен на порту ${PORT}`);
+  console.log(`HTTP сервер запущен на порту ${PORT}`);
 });
