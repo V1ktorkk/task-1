@@ -14,23 +14,52 @@ app.use((req, res, next) => {
 });
 
 app.get("/", (req, res) => {
-  res.type("text/plain").send(CUSTOM_ID);
+  res.type("text/plain; charset=UTF-8").send(CUSTOM_ID);
 });
 
 app.get("/login/", (req, res) => {
-  res.setHeader("Content-Type", "text/plain; charset=UTF-8");
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.send(CUSTOM_ID);
+  res.type("text/plain; charset=UTF-8").send(CUSTOM_ID);
+});
+
+app.get("/promise/", (req, res) => {
+  res.type("text/plain; charset=UTF-8");
+  const functionCode =
+    "function task(x){ return new Promise(function(resolve, reject){ if(x < 18){ resolve('yes'); } else { reject('no'); } }); }";
+  res.send(functionCode);
+});
+
+app.get("/fetch/", (req, res) => {
+  res.type("text/html; charset=UTF-8");
+  const html = `<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Fetch Task</title>
+</head>
+<body>
+<input id="inp" type="text">
+<button id="bt">Go</button>
+<script>
+  document.getElementById('bt').addEventListener('click', function () {
+    const inp = document.getElementById('inp');
+    const url = inp.value;
+    if (!url) return;
+    fetch(url)
+      .then(function (resp) { return resp.text(); })
+      .then(function (text) { inp.value = text; })
+      .catch(function (err) { inp.value = 'ERROR'; });
+  });
+</script>
+</body>
+</html>`;
+  res.send(html);
 });
 
 app.get("/sample/", (req, res) => {
-  res.setHeader("Content-Type", "text/plain; charset=UTF-8");
-  res.setHeader("Access-Control-Allow-Origin", "*");
-
+  res.type("text/plain; charset=UTF-8");
   const functionCode = `function task(x) {
   return x * this * this;
 }`;
-
   res.send(functionCode);
 });
 
@@ -39,9 +68,7 @@ app.post("/size2json", upload.single("image"), async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ error: "Не передано поле image" });
     }
-
     const metadata = await sharp(req.file.buffer).metadata();
-
     res.json({
       width: metadata.width,
       height: metadata.height,
@@ -50,8 +77,6 @@ app.post("/size2json", upload.single("image"), async (req, res) => {
     res.status(500).json({ error: "Ошибка обработки изображения" });
   }
 });
-
-const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`HTTP сервер запущен на порту ${PORT}`);
