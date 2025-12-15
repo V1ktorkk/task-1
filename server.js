@@ -77,6 +77,7 @@ app.post("/size2json", upload.single("image"), async (req, res) => {
     res.status(500).json({ error: "Ошибка обработки изображения" });
   }
 });
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`HTTP сервер запущен на порту ${PORT}`);
