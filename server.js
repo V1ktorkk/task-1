@@ -5,7 +5,6 @@ const sharp = require("sharp");
 const app = express();
 const upload = multer();
 
-const LOGIN = "viktorkk1";
 const CUSTOM_ID = "7cd977ad-9064-437b-a4db-b9b8b2b669d0";
 
 app.use((req, res, next) => {
@@ -18,8 +17,21 @@ app.get("/", (req, res) => {
   res.type("text/plain").send(CUSTOM_ID);
 });
 
-app.get("/login", (req, res) => {
-  res.type("text/plain").send(LOGIN);
+app.get("/login/", (req, res) => {
+  res.setHeader("Content-Type", "text/plain; charset=UTF-8");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.send(CUSTOM_ID);
+});
+
+app.get("/sample/", (req, res) => {
+  res.setHeader("Content-Type", "text/plain; charset=UTF-8");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+
+  const functionCode = `function task(x) {
+  return x * this * this;
+}`;
+
+  res.send(functionCode);
 });
 
 app.post("/size2json", upload.single("image"), async (req, res) => {
