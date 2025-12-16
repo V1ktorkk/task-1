@@ -6,6 +6,7 @@ const app = express();
 const upload = multer();
 
 const CUSTOM_ID = "7cd977ad-9064-437b-a4db-b9b8b2b669d0";
+const MOSCOW_TZ_OFFSET = 3;
 app.use(express.text({ type: "*/*" }));
 app.use(express.json());
 
@@ -26,6 +27,14 @@ app.options("*", (req, res) => {
 
 app.get("/", (req, res) => {
   res.type("text/plain; charset=UTF-8").send(CUSTOM_ID);
+});
+
+app.get("/hour", (req, res) => {
+  const now = new Date();
+  const utcHours = now.getUTCHours();
+  const moscowHours = (utcHours + MOSCOW_TZ_OFFSET) % 24;
+  const hour = String(moscowHours).padStart(2, "0");
+  res.send(hour);
 });
 
 app.get("/login/", (req, res) => {
