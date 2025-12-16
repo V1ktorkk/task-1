@@ -4,9 +4,10 @@ const sharp = require("sharp");
 
 const app = express();
 const upload = multer();
-app.use(express.text());
 
 const CUSTOM_ID = "7cd977ad-9064-437b-a4db-b9b8b2b669d0";
+app.use(express.text({ type: "*/*" }));
+app.use(express.json());
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
