@@ -4,13 +4,23 @@ const sharp = require("sharp");
 
 const app = express();
 const upload = multer();
+app.use(express.text());
 
 const CUSTOM_ID = "7cd977ad-9064-437b-a4db-b9b8b2b669d0";
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "x-test,ngrok-skip-browser-warning,Content-Type,Accept,Access-Control-Allow-Headers"
+  );
   res.setHeader("X-Author", CUSTOM_ID);
   next();
+});
+
+app.options("*", (req, res) => {
+  res.sendStatus(200);
 });
 
 app.get("/", (req, res) => {
@@ -61,6 +71,21 @@ app.get("/sample/", (req, res) => {
   return x * this * this;
 }`;
   res.send(functionCode);
+});
+
+app.all("/result4/", (req, res) => {
+  res.type("application/json; charset=UTF-8");
+
+  const xTestValue = req.headers["x-test"] || "";
+  const bodyValue = req.body || "";
+
+  const responseData = {
+    message: CUSTOM_ID,
+    "x-result": xTestValue,
+    "x-body": bodyValue,
+  };
+
+  res.json(responseData);
 });
 
 app.post("/size2json", upload.single("image"), async (req, res) => {
